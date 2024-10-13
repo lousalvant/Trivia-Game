@@ -10,8 +10,7 @@ import SwiftUI
 class TriviaViewModel: ObservableObject {
     @Published var questions: [TriviaQuestion] = []
     
-    func fetchTrivia(amount: Int, category: String, difficulty: String, type: String) async {
-        // Create the URL for fetching trivia
+    func fetchTrivia(amount: Int, category: Int, difficulty: String, type: String) async {
         let urlString = "https://opentdb.com/api.php?amount=\(amount)&category=\(category)&difficulty=\(difficulty)&type=\(type)"
         
         guard let url = URL(string: urlString) else {
@@ -22,17 +21,15 @@ class TriviaViewModel: ObservableObject {
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             
-            // Print the raw response to inspect it
             if let jsonString = String(data: data, encoding: .utf8) {
                 print("Raw JSON Response: \(jsonString)")
             }
             
             let decodedData = try JSONDecoder().decode(TriviaResponse.self, from: data)
             
-            // Handle different response codes
             if decodedData.response_code == 0 {
                 DispatchQueue.main.async {
-                    self.questions = decodedData.results // No need for optional binding
+                    self.questions = decodedData.results
                 }
             } else {
                 print("Error: Trivia API returned response code \(decodedData.response_code)")
@@ -43,7 +40,6 @@ class TriviaViewModel: ObservableObject {
         }
     }
     
-    // Helper function to handle various response codes from the API
     private func handleResponseCode(_ code: Int) {
         switch code {
         case 1:

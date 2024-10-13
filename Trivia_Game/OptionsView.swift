@@ -8,14 +8,20 @@
 import SwiftUI
 
 struct OptionsView: View {
-    @ObservedObject var viewModel: TriviaViewModel // Accept the ViewModel
-    
+    @ObservedObject var viewModel: TriviaViewModel
     @State private var numberOfQuestions = 5
-    @State private var selectedCategory = "General Knowledge"
+    @State private var selectedCategory = 9 // Default ID for General Knowledge
     @State private var selectedDifficulty = "easy"
     @State private var questionType = "multiple"
+    @State private var isTriviaReady = false // State to track navigation readiness
     
-    let categories = ["General Knowledge", "Science", "Math", "History"]
+    let categories = [
+        (id: 9, name: "General Knowledge"),
+        (id: 17, name: "Science"),
+        (id: 19, name: "Math"),
+        (id: 23, name: "History")
+    ]
+    
     let difficulties = ["easy", "medium", "hard"]
     let types = ["multiple", "boolean"]
     
@@ -32,8 +38,8 @@ struct OptionsView: View {
                 
                 Section(header: Text("Category")) {
                     Picker("Category", selection: $selectedCategory) {
-                        ForEach(categories, id: \.self) { category in
-                            Text(category)
+                        ForEach(categories, id: \.id) { category in
+                            Text(category.name).tag(category.id)
                         }
                     }
                 }
@@ -58,6 +64,7 @@ struct OptionsView: View {
             Button(action: {
                 Task {
                     await viewModel.fetchTrivia(amount: numberOfQuestions, category: selectedCategory, difficulty: selectedDifficulty, type: questionType)
+                    isTriviaReady = true // Set to true after trivia is fetched
                 }
             }) {
                 Text("Start Trivia Game")
@@ -71,5 +78,8 @@ struct OptionsView: View {
             }
         }
         .navigationTitle("Trivia Options")
+        .navigationDestination(isPresented: $isTriviaReady) { // Use the new navigationDestination modifier
+            TriviaGameView(viewModel: viewModel)
+        }
     }
 }
