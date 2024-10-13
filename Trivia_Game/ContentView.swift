@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var viewModel = TriviaViewModel() // The ViewModel is here
+    @StateObject var viewModel = TriviaViewModel()
 
     var body: some View {
-        NavigationView {
-            OptionsView(viewModel: viewModel) // Pass the ViewModel to the options screen
+        NavigationStack { // Use NavigationStack instead of NavigationView
+            OptionsView(viewModel: viewModel)
         }
     }
 }
@@ -20,3 +20,4 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+

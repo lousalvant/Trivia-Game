@@ -14,17 +14,17 @@ struct OptionsView: View {
     @State private var selectedDifficulty = "easy"
     @State private var questionType = "multiple"
     @State private var isTriviaReady = false // State to track navigation readiness
-    
+
     let categories = [
         (id: 9, name: "General Knowledge"),
         (id: 17, name: "Science"),
         (id: 19, name: "Math"),
         (id: 23, name: "History")
     ]
-    
+
     let difficulties = ["easy", "medium", "hard"]
     let types = ["multiple", "boolean"]
-    
+
     var body: some View {
         VStack {
             Form {
@@ -35,7 +35,7 @@ struct OptionsView: View {
                         }
                     }.pickerStyle(SegmentedPickerStyle())
                 }
-                
+
                 Section(header: Text("Category")) {
                     Picker("Category", selection: $selectedCategory) {
                         ForEach(categories, id: \.id) { category in
@@ -43,7 +43,7 @@ struct OptionsView: View {
                         }
                     }
                 }
-                
+
                 Section(header: Text("Difficulty")) {
                     Picker("Difficulty", selection: $selectedDifficulty) {
                         ForEach(difficulties, id: \.self) { difficulty in
@@ -51,7 +51,7 @@ struct OptionsView: View {
                         }
                     }.pickerStyle(SegmentedPickerStyle())
                 }
-                
+
                 Section(header: Text("Type")) {
                     Picker("Type", selection: $questionType) {
                         ForEach(types, id: \.self) { type in
@@ -60,11 +60,13 @@ struct OptionsView: View {
                     }.pickerStyle(SegmentedPickerStyle())
                 }
             }
-            
+
             Button(action: {
                 Task {
                     await viewModel.fetchTrivia(amount: numberOfQuestions, category: selectedCategory, difficulty: selectedDifficulty, type: questionType)
-                    isTriviaReady = true // Set to true after trivia is fetched
+                    if !viewModel.questions.isEmpty {
+                        isTriviaReady = true // Set to true only after questions are fetched
+                    }
                 }
             }) {
                 Text("Start Trivia Game")
@@ -78,7 +80,7 @@ struct OptionsView: View {
             }
         }
         .navigationTitle("Trivia Options")
-        .navigationDestination(isPresented: $isTriviaReady) { // Use the new navigationDestination modifier
+        .navigationDestination(isPresented: $isTriviaReady) {
             TriviaGameView(viewModel: viewModel)
         }
     }
