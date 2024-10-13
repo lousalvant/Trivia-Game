@@ -10,14 +10,19 @@ import SwiftUI
 class TriviaViewModel: ObservableObject {
     @Published var questions: [TriviaQuestion] = []
     
+    // Calculate the user's score
+    func calculateScore() -> Int {
+        return questions.filter { $0.selectedAnswer == $0.correct_answer }.count
+    }
+    
     static var mock: TriviaViewModel {
-            let mockViewModel = TriviaViewModel()
-            mockViewModel.questions = [
-                TriviaQuestion(category: "General Knowledge", type: "multiple", difficulty: "easy", question: "What is the closest planet to the Sun?", correct_answer: "Mercury", incorrect_answers: ["Venus", "Earth", "Mars"]),
-                TriviaQuestion(category: "Science", type: "multiple", difficulty: "medium", question: "What is the atomic number of Oxygen?", correct_answer: "8", incorrect_answers: ["4", "6", "10"])
-            ]
-            return mockViewModel
-        }
+        let mockViewModel = TriviaViewModel()
+        mockViewModel.questions = [
+            TriviaQuestion(category: "General Knowledge", type: "multiple", difficulty: "easy", question: "What is the closest planet to the Sun?", correct_answer: "Mercury", incorrect_answers: ["Venus", "Earth", "Mars"]),
+            TriviaQuestion(category: "Science", type: "multiple", difficulty: "medium", question: "What is the atomic number of Oxygen?", correct_answer: "8", incorrect_answers: ["4", "6", "10"])
+        ]
+        return mockViewModel
+    }
     
     func fetchTrivia(amount: Int, category: Int, difficulty: String, type: String) async {
         let urlString = "https://opentdb.com/api.php?amount=\(amount)&category=\(category)&difficulty=\(difficulty)&type=\(type)"
@@ -66,8 +71,3 @@ class TriviaViewModel: ObservableObject {
         }
     }
 }
-
-#Preview {
-    TriviaGameView(viewModel: TriviaViewModel.mock) // Using mock data for the preview
-}
-

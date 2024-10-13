@@ -13,7 +13,7 @@ struct TriviaResponse: Codable {
 }
 
 struct TriviaQuestion: Codable, Identifiable {
-    var id: String { question } // Use the question string as a unique identifier
+    var id: String { question }
     
     let category: String
     let type: String
@@ -21,4 +21,7 @@ struct TriviaQuestion: Codable, Identifiable {
     let question: String
     let correct_answer: String
     let incorrect_answers: [String]
+    
+    var selectedAnswer: String? // Track the user's selected answer
 }
+

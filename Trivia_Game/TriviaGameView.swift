@@ -8,24 +8,54 @@
 import SwiftUI
 
 struct TriviaGameView: View {
-    @ObservedObject var viewModel: TriviaViewModel // Accept the ViewModel
+    @ObservedObject var viewModel: TriviaViewModel
+    @State private var showScore = false // State to control whether the score is shown
     
     var body: some View {
         VStack {
             if viewModel.questions.isEmpty {
                 Text("Loading questions...")
             } else {
-                List(viewModel.questions) { question in
+                List(viewModel.questions.indices, id: \.self) { index in
+                    let question = viewModel.questions[index]
+                    
                     VStack(alignment: .leading) {
                         Text(question.question)
                             .font(.headline)
-                        ForEach(question.incorrect_answers, id: \.self) { answer in
-                            Text(answer)
+                        
+                        // Combine incorrect and correct answers, then shuffle
+                        let answers = (question.incorrect_answers + [question.correct_answer]).shuffled()
+
+                        ForEach(answers, id: \.self) { answer in
+                            HStack {
+                                Text(answer)
+                                    .padding()
+                                    .background(question.selectedAnswer == answer ? Color.blue.opacity(0.2) : Color.clear)
+                                    .cornerRadius(8)
+                                    .onTapGesture {
+                                        viewModel.questions[index].selectedAnswer = answer
+                                    }
+                            }
                         }
-                        Text(question.correct_answer)
-                            .fontWeight(.bold)
-                            .foregroundColor(.green)
                     }
+                }
+                
+                Button(action: {
+                    // Show score when the user submits
+                    showScore = true
+                }) {
+                    Text("Submit Answers")
+                        .font(.headline)
+                        .padding()
+                        .background(Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .padding()
+                }
+                .alert("Your Score", isPresented: $showScore) {
+                    Button("OK", role: .cancel) {}
+                } message: {
+                    Text("You scored \(viewModel.calculateScore()) out of \(viewModel.questions.count)!")
                 }
             }
         }
