@@ -11,12 +11,22 @@ struct TriviaGameView: View {
     @ObservedObject var viewModel: TriviaViewModel
     @State private var showScore = false // State to control whether the score is shown
     @State private var isGameCompleted = false // Track if the user has submitted their answers
-    
+    @State private var timeRemaining: Int = 0 // Timer for the game
+    @State private var timerRunning = false // Track if the timer is running
+
     var body: some View {
         VStack {
             if viewModel.questions.isEmpty {
                 Text("Loading questions...")
             } else {
+                // Display timer at the top
+                Text("Time Remaining: \(timeRemaining) seconds")
+                    .font(.title)
+                    .padding()
+                    .onAppear {
+                        startTimer()
+                    }
+
                 List(viewModel.questions.indices, id: \.self) { index in
                     let question = viewModel.questions[index]
                     
@@ -47,6 +57,7 @@ struct TriviaGameView: View {
                     // When user submits, mark game as completed and show score
                     isGameCompleted = true
                     showScore = true
+                    stopTimer()
                 }) {
                     Text("Submit Answers")
                         .font(.headline)
@@ -64,6 +75,9 @@ struct TriviaGameView: View {
             }
         }
         .navigationTitle("Trivia Game")
+        .onDisappear {
+            stopTimer() // Stop the timer if the view is dismissed
+        }
     }
     
     // Helper function to determine background color for each answer
@@ -77,5 +91,29 @@ struct TriviaGameView: View {
         }
         
         return question.selectedAnswer == answer ? Color.blue.opacity(0.2) : Color.clear
+    }
+
+    // Timer setup
+    private func startTimer() {
+        timeRemaining = viewModel.timeLimit // Set the time limit
+        timerRunning = true
+
+        // Start the timer
+        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            if timeRemaining > 0 && timerRunning {
+                timeRemaining -= 1
+            } else {
+                timer.invalidate()
+                if timeRemaining == 0 {
+                    // Auto-submit when timer runs out
+                    isGameCompleted = true
+                    showScore = true
+                }
+            }
+        }
+    }
+
+    private func stopTimer() {
+        timerRunning = false
     }
 }

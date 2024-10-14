@@ -9,12 +9,14 @@ import SwiftUI
 
 class TriviaViewModel: ObservableObject {
     @Published var questions: [TriviaQuestion] = []
+    @Published var timeLimit: Int = 30 // Default to 30 seconds, but this will be configurable via OptionsView
     
     // Calculate the user's score based on the correct answers
     func calculateScore() -> Int {
         return questions.filter { $0.selectedAnswer == $0.correct_answer }.count
     }
     
+    // Static mock data for previews
     static var mock: TriviaViewModel {
         let mockViewModel = TriviaViewModel()
         mockViewModel.questions = [
@@ -35,9 +37,11 @@ class TriviaViewModel: ObservableObject {
                 incorrect_answers: ["4", "6", "10"]
             )
         ]
+        mockViewModel.timeLimit = 60 // For preview purposes, set a mock time limit
         return mockViewModel
     }
     
+    // Fetch trivia from the Open Trivia DB API
     func fetchTrivia(amount: Int, category: Int, difficulty: String, type: String) async {
         let urlString = "https://opentdb.com/api.php?amount=\(amount)&category=\(category)&difficulty=\(difficulty)&type=\(type)"
         
@@ -68,6 +72,7 @@ class TriviaViewModel: ObservableObject {
         }
     }
     
+    // Handle the response code from the API
     private func handleResponseCode(_ code: Int) {
         switch code {
         case 1:
@@ -83,5 +88,10 @@ class TriviaViewModel: ObservableObject {
         default:
             print("Unknown error occurred.")
         }
+    }
+    
+    // Function to update the time limit from the options screen
+    func updateTimeLimit(to newTimeLimit: Int) {
+        timeLimit = newTimeLimit
     }
 }
