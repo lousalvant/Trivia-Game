@@ -23,10 +23,8 @@ struct TriviaGameView: View {
                         Text(question.question)
                             .font(.headline)
                         
-                        // Combine incorrect and correct answers, then shuffle
-                        let answers = (question.incorrect_answers + [question.correct_answer]).shuffled()
-
-                        ForEach(answers, id: \.self) { answer in
+                        // Use shuffledAnswers directly without reshuffling
+                        ForEach(question.shuffledAnswers, id: \.self) { answer in
                             HStack {
                                 Text(answer)
                                     .padding()
