@@ -10,7 +10,7 @@ import SwiftUI
 class TriviaViewModel: ObservableObject {
     @Published var questions: [TriviaQuestion] = []
     
-    // Calculate the user's score
+    // Calculate the user's score based on the correct answers
     func calculateScore() -> Int {
         return questions.filter { $0.selectedAnswer == $0.correct_answer }.count
     }
@@ -18,8 +18,22 @@ class TriviaViewModel: ObservableObject {
     static var mock: TriviaViewModel {
         let mockViewModel = TriviaViewModel()
         mockViewModel.questions = [
-            TriviaQuestion(category: "General Knowledge", type: "multiple", difficulty: "easy", question: "What is the closest planet to the Sun?", correct_answer: "Mercury", incorrect_answers: ["Venus", "Earth", "Mars"]),
-            TriviaQuestion(category: "Science", type: "multiple", difficulty: "medium", question: "What is the atomic number of Oxygen?", correct_answer: "8", incorrect_answers: ["4", "6", "10"])
+            TriviaQuestion(
+                category: "General Knowledge",
+                type: "multiple",
+                difficulty: "easy",
+                question: "What is the closest planet to the Sun?",
+                correct_answer: "Mercury",
+                incorrect_answers: ["Venus", "Earth", "Mars"]
+            ),
+            TriviaQuestion(
+                category: "Science",
+                type: "multiple",
+                difficulty: "medium",
+                question: "What is the atomic number of Oxygen?",
+                correct_answer: "8",
+                incorrect_answers: ["4", "6", "10"]
+            )
         ]
         return mockViewModel
     }

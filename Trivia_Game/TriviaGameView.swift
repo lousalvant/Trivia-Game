@@ -10,6 +10,7 @@ import SwiftUI
 struct TriviaGameView: View {
     @ObservedObject var viewModel: TriviaViewModel
     @State private var showScore = false // State to control whether the score is shown
+    @State private var isGameCompleted = false // Track if the user has submitted their answers
     
     var body: some View {
         VStack {
@@ -23,15 +24,19 @@ struct TriviaGameView: View {
                         Text(question.question)
                             .font(.headline)
                         
-                        // Use shuffledAnswers directly without reshuffling
-                        ForEach(question.shuffledAnswers, id: \.self) { answer in
+                        // Combine incorrect and correct answers, then shuffle
+                        let answers = question.shuffledAnswers
+
+                        ForEach(answers, id: \.self) { answer in
                             HStack {
                                 Text(answer)
                                     .padding()
-                                    .background(question.selectedAnswer == answer ? Color.blue.opacity(0.2) : Color.clear)
+                                    .background(answerBackgroundColor(for: answer, question: question))
                                     .cornerRadius(8)
                                     .onTapGesture {
-                                        viewModel.questions[index].selectedAnswer = answer
+                                        if !isGameCompleted {
+                                            viewModel.questions[index].selectedAnswer = answer
+                                        }
                                     }
                             }
                         }
@@ -39,7 +44,8 @@ struct TriviaGameView: View {
                 }
                 
                 Button(action: {
-                    // Show score when the user submits
+                    // When user submits, mark game as completed and show score
+                    isGameCompleted = true
                     showScore = true
                 }) {
                     Text("Submit Answers")
@@ -58,5 +64,18 @@ struct TriviaGameView: View {
             }
         }
         .navigationTitle("Trivia Game")
+    }
+    
+    // Helper function to determine background color for each answer
+    private func answerBackgroundColor(for answer: String, question: TriviaQuestion) -> Color {
+        if isGameCompleted {
+            if answer == question.correct_answer {
+                return Color.green.opacity(0.6) // Correct answer is highlighted in green
+            } else if answer == question.selectedAnswer {
+                return Color.red.opacity(0.6) // Incorrect selected answer is highlighted in red
+            }
+        }
+        
+        return question.selectedAnswer == answer ? Color.blue.opacity(0.2) : Color.clear
     }
 }
