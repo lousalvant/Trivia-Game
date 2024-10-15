@@ -13,6 +13,7 @@ struct TriviaGameView: View {
     @State private var isGameCompleted = false // Track if the user has submitted their answers
     @State private var timeRemaining: Int = 0 // Timer for the game
     @State private var timerRunning = false // Track if the timer is running
+    @Environment(\.dismiss) private var dismiss // Environment dismiss to go back
 
     var body: some View {
         VStack {
@@ -68,7 +69,9 @@ struct TriviaGameView: View {
                         .padding()
                 }
                 .alert("Your Score", isPresented: $showScore) {
-                    Button("OK", role: .cancel) {}
+                    Button("OK", role: .cancel) {
+                        // Allow user to review the answers after seeing the score
+                    }
                 } message: {
                     Text("You scored \(viewModel.calculateScore()) out of \(viewModel.questions.count)!")
                 }
@@ -76,6 +79,10 @@ struct TriviaGameView: View {
         }
         .navigationTitle("Trivia Game")
         .onDisappear {
+            if isGameCompleted {
+                // Only reset the game when navigating back to the OptionsView
+                viewModel.resetGame()
+            }
             stopTimer() // Stop the timer if the view is dismissed
         }
     }

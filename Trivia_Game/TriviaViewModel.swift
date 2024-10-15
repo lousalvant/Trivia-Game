@@ -16,6 +16,20 @@ class TriviaViewModel: ObservableObject {
         return questions.filter { $0.selectedAnswer == $0.correct_answer }.count
     }
     
+    // Reset the game state to start a new game
+    func resetGame() {
+        // Clear the questions array
+        questions.removeAll()
+        
+        // Reset the selected answers to nil (in case you reuse the same question objects)
+        for index in questions.indices {
+            questions[index].selectedAnswer = nil
+        }
+        
+        // Optionally reset the time limit or keep the existing one
+        timeLimit = 30 // Default or configurable, depending on user preferences
+    }
+
     // Static mock data for previews
     static var mock: TriviaViewModel {
         let mockViewModel = TriviaViewModel()
@@ -62,6 +76,10 @@ class TriviaViewModel: ObservableObject {
             if decodedData.response_code == 0 {
                 DispatchQueue.main.async {
                     self.questions = decodedData.results
+                    // Reset selected answers after fetching new questions
+                    for index in self.questions.indices {
+                        self.questions[index].selectedAnswer = nil
+                    }
                 }
             } else {
                 print("Error: Trivia API returned response code \(decodedData.response_code)")
