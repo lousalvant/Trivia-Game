@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E4EE944D2CCA688D00F24A2C /* brainstorming1_lousalvant.md in Resources */ = {isa = PBXBuildFile; fileRef = E4EE944C2CCA688D00F24A2C /* brainstorming1_lousalvant.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		E4B8377C2CBBE84C0054C865 /* Trivia_Game.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trivia_Game.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4EE944C2CCA688D00F24A2C /* brainstorming1_lousalvant.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = brainstorming1_lousalvant.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -34,6 +39,7 @@
 			children = (
 				E4B8377E2CBBE84C0054C865 /* Trivia_Game */,
 				E4B8377D2CBBE84C0054C865 /* Products */,
+				E4EE944C2CCA688D00F24A2C /* brainstorming1_lousalvant.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -109,6 +115,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4EE944D2CCA688D00F24A2C /* brainstorming1_lousalvant.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
