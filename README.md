@@ -41,6 +41,13 @@ The following **additional** features are implemented:
 ![GIF](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTdrYnN1bWtxZWZyOHBhMnZraXA1cDZ4cWMxazBzcGpleGhhNjR5MCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2p3NlADlGmoZOThILO/giphy.gif)
 
 
+**HackMD Document**
+
+
+![Alt text](https://i.imgur.com/Y75jMKs.png)
+
+
+
 ## Notes
 
 During development, I faced issues with pushing code to GitHub. The problem was initially due to connection errors when using HTTPS, which I later resolved by switching to SSH. However, further difficulties arose with SSH keys, where my MacBook's SSH key was not recognized. After reconfiguring the SSH settings and verifying the key, I was able to push code successfully.
